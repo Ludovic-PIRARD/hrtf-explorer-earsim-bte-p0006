@@ -6,11 +6,13 @@
  * will fail (browsers block fetch on file://).
  */
 (async () => {
-const DATA_ALL = await fetch('data/data_all.json').then(r => {
+/* v=20261008b — P0006_Windowed_48kHz.sofa (with ITD); bust CDN/browser cache */
+const CACHE_VER = '20261008b';
+const DATA_ALL = await fetch('data/data_all.json?v=' + CACHE_VER, {cache: 'no-store'}).then(r => {
   if (!r.ok) throw new Error('data_all.json: HTTP ' + r.status);
   return r.json();
 });
-const IRD = await fetch('data/ird.json').then(r => {
+const IRD = await fetch('data/ird.json?v=' + CACHE_VER, {cache: 'no-store'}).then(r => {
   if (!r.ok) throw new Error('ird.json: HTTP ' + r.status);
   return r.json();
 });
@@ -1013,7 +1015,7 @@ if(HAS_HUMAN){
   const pb=$('psrc_h');if(pb){pb.style.display='';pb.dataset.d='human';pb.textContent=LBL.human;}
   $('cchk_h').style.display='';
   $('c_h').checked=true;$('cc_h').checked=true;
-  $('shfooter').innerHTML='P0006: SONICOM measured human HRTF (Windowed 48 kHz, with ITD) — reference/benchmark against KEMAR EarSim and BTE.';
+  $('shfooter').innerHTML='P0006: <code>P0006_Windowed_48kHz.sofa</code> (with ITD; data '+CACHE_VER+') — reference/benchmark against KEMAR EarSim and BTE.';
 }else{
   $('chk_h').style.display='none';$('th_h').style.display='none';
   $('itd_h').style.display='none';$('ild_h').style.display='none';
