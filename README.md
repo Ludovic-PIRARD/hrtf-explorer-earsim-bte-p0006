@@ -2,8 +2,8 @@
 
 Interactive comparison of KEMAR **EarSim** (blocked ear canal), **BTE** (Meta Quest 3 + Cochlear Nucleus 5 mic ports), and SONICOM **P0006** measured human HRTF (reference).
 
-- EarSim / BTE: Windowed with ITD, 48 kHz  
-- P0006: Windowed NoITD Scaled (human benchmark)  
+- EarSim / BTE / P0006: Windowed with ITD, 48 kHz  
+- P0006: SONICOM measured human HRTF (benchmark)  
 - 793 matched directions; direction overlay, slice spectrograms, ITD/ILD, binaural preview  
 - UI adapted from [yoyolicoris/hrtf-explorer](https://yoyolicoris.github.io/hrtf-explorer/)
 

@@ -1013,7 +1013,7 @@ if(HAS_HUMAN){
   const pb=$('psrc_h');if(pb){pb.style.display='';pb.dataset.d='human';pb.textContent=LBL.human;}
   $('cchk_h').style.display='';
   $('c_h').checked=true;$('cc_h').checked=true;
-  $('shfooter').innerHTML='P0006: SONICOM measured human HRTF (Windowed NoITD, Scaled) — reference/benchmark against KEMAR EarSim and BTE.';
+  $('shfooter').innerHTML='P0006: SONICOM measured human HRTF (Windowed 48 kHz, with ITD) — reference/benchmark against KEMAR EarSim and BTE.';
 }else{
   $('chk_h').style.display='none';$('th_h').style.display='none';
   $('itd_h').style.display='none';$('ild_h').style.display='none';

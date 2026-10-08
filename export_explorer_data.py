@@ -6,7 +6,7 @@ the HRTF explorer (data_all.json + ird.json).
 Keys keep the explorer's internal names:
   meta   → EarSim (canal), Windowed with ITD
   soni   → BTE (Quest3 + Nucleus 5), Windowed with ITD
-  human  → P0006 SONICOM measured, Windowed NoITD (human reference)
+  human  → P0006 SONICOM measured, Windowed with ITD (human reference)
 """
 
 from __future__ import annotations
@@ -42,7 +42,7 @@ BTE = (
 P0006 = (
     ROOT
     / "P0006"
-    / "P0006_HRIR_SONICOM_Measured_Windowed_NoITD_Scaled.sofa"
+    / "P0006_Windowed_48kHz.sofa"
 )
 
 NF = 150
@@ -240,8 +240,8 @@ def main():
         },
         "fs": fs,
         "note": (
-            "EarSim/BTE: Windowed with ITD 48 kHz; "
-            "P0006: Windowed NoITD Scaled (human reference); "
+            "EarSim/BTE/P0006: Windowed with ITD 48 kHz; "
+            "P0006 = SONICOM measured human reference; "
             f"{len(idx_e)} matched directions; "
             "keys meta=EarSim, soni=BTE, human=P0006"
         ),

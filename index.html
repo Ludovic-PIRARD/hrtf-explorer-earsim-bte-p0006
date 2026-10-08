@@ -13,7 +13,7 @@
     <p>
       KEMAR blocked ear-canal (EarSim) vs BTE mic ports on Quest&nbsp;3 + Cochlear Nucleus&nbsp;5,
       with SONICOM <b>P0006</b> measured human HRTF as reference.
-      EarSim/BTE: Windowed (with ITD) 48&nbsp;kHz; P0006: Windowed NoITD Scaled.
+      All three: Windowed (with ITD) 48&nbsp;kHz.
       Location-matched (793 directions), Gamper-2013a spherical interpolation.
       Inspired by <a href="https://yoyolicoris.github.io/hrtf-explorer/" style="color:#8fa3b8">yoyolicoris/hrtf-explorer</a>.
     </p>
@@ -130,7 +130,7 @@
       <div class="hint">Tip: pinna notches show up as dark ridges sweeping with angle. P0006 provides a real-human spectral reference against the two KEMAR mic placements.</div>
       <div style="margin-top:10px"><b>Binaural cues along the sweep</b><div id="cueinfo" style="margin:6px 0"></div>
       <b>Reading</b><div id="cueread" style="margin:6px 0">&mdash;</div>
-      <div class="hint">Cues use the same Delaunay/barycentric interpolation as the spectra. P0006 is NoITD, so its ITD trace is near zero.</div>
+      <div class="hint">Cues use the same Delaunay/barycentric interpolation as the spectra (per-direction values are in the Direction tab).</div>
     </div>
   </div>
 </div>
@@ -139,7 +139,7 @@
   &nbsp;·&nbsp;
   BTE: <code>BTE KEMAR Knowles_Windowed_48kHz.sofa</code>
   &nbsp;·&nbsp;
-  P0006: <code>P0006_HRIR_SONICOM_Measured_Windowed_NoITD_Scaled.sofa</code>
+  P0006: <code>P0006_Windowed_48kHz.sofa</code>
   (793 matched positions, 256-sample HRIRs, 48&nbsp;kHz).
   Interpolation: Delaunay triangulation + barycentric weights (Gamper 2013).
   <span id="shfooter"></span>
