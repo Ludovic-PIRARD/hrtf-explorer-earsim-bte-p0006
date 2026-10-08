@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HRTF Explorer — EarSim vs BTE vs P0006</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <div>
+    <h1>HRTF Explorer — EarSim vs BTE vs P0006</h1>
+    <p>
+      KEMAR blocked ear-canal (EarSim) vs BTE mic ports on Quest&nbsp;3 + Cochlear Nucleus&nbsp;5,
+      with SONICOM <b>P0006</b> measured human HRTF as reference.
+      EarSim/BTE: Windowed (with ITD) 48&nbsp;kHz; P0006: Windowed NoITD Scaled.
+      Location-matched (793 directions), Gamper-2013a spherical interpolation.
+      Inspired by <a href="https://yoyolicoris.github.io/hrtf-explorer/" style="color:#8fa3b8">yoyolicoris/hrtf-explorer</a>.
+    </p>
+  </div>
+</header>
+<div id="tabs">
+  <button id="tab1" class="on">Direction compare</button>
+  <button id="tab2">Slice viewer + cues</button>
+</div>
+<div id="layout">
+  <div id="main">
+    <div id="panel1">
+      <div class="controls">
+        <div class="row">
+          <label>Azimuth</label><input type="range" id="az" min="-180" max="180" step="0.5" value="0" title="positive = right, negative = left"><span class="val" id="azv">0&deg;</span>
+          <label style="min-width:0">Elevation</label><input type="range" id="el" min="-90" max="90" step="0.5" value="0"><span class="val" id="elv">0&deg;</span>
+        </div>
+        <div class="row">
+          <span class="chk" id="chk_m"><input type="checkbox" id="c_m" checked><span class="sw" style="background:#4da3ff"></span>EarSim</span>
+          <span class="chk" id="chk_h"><input type="checkbox" id="c_h" checked><span class="sw" style="background:#22d3ee"></span>P0006</span>
+          <span class="chk"><input type="checkbox" id="c_s" checked><span class="sw" style="background:#ff7a59"></span>BTE</span>
+          <span class="chk"><input type="checkbox" id="align" checked>Level-align (per ear, 200 Hz&ndash;16 kHz)</span>
+          <span class="chk" style="display:none"><input type="checkbox" id="itdcomp1">Compensate ITD bias</span>
+          <div class="seg" id="mode"><button data-m="overlay" class="on">Overlay</button><button data-m="diff">Difference</button></div>
+          <div class="seg" id="fscale"><button data-f="log" class="on">Log freq</button><button data-f="lin">Linear</button></div>
+        </div>
+      </div>
+      <div class="plots">
+        <div class="plotwrap"><canvas id="plotL"></canvas></div>
+        <div class="plotwrap"><canvas id="plotR"></canvas></div>
+      </div>
+    </div>
+    <div id="panel2" class="hidden">
+      <div class="controls">
+        <div class="row">
+          <div class="seg" id="ds">
+            <button data-d="meta" id="ds_m" class="on">EarSim</button>
+            <button data-d="human" id="ds_h">P0006</button>
+            <button data-d="soni">BTE</button>
+            <button data-d="diff" title="Per-direction EarSim minus BTE magnitude spectra (dB)">&#916; EarSim&minus;BTE</button>
+          </div>
+          <div class="seg" id="stype"><button data-s="az" class="on">Azimuth sweep</button><button data-s="el">Elevation sweep</button></div>
+          <div class="seg" id="sfscale"><button data-f="log" class="on">Log freq</button><button data-f="lin">Linear</button></div>
+          <span class="chk" title="Global diffuse-field response: area-weighted power mean over all measurement directions"><input type="checkbox" id="norm">Subtract diffuse-field response (directional features)</span>
+          <span class="chk" id="lmchk" title="Add the global level offset toward EarSim"><input type="checkbox" id="lmatch">Level-match to EarSim <b id="lmatchv"></b></span>
+          <span class="chk" style="display:none"><input type="checkbox" id="itdcomp2">Compensate ITD bias</span>
+        </div>
+        <div class="row">
+          <label id="fixlabel">Elevation</label><input type="range" id="fix" min="-90" max="90" step="0.5" value="0"><span class="val" id="fixv">0&deg;</span>
+        </div>
+      </div>
+      <div class="plots">
+        <div class="plotwrap"><canvas id="sliceL"></canvas></div>
+        <div class="plotwrap"><canvas id="sliceR"></canvas></div>
+      </div>
+      <div id="hover">Hover over a heatmap to read values.</div>
+      <div style="margin:16px 0 8px"><b>Binaural cues along the sweep</b>
+        <span class="hint">same sweep sliders as the heatmaps above</span>
+        <span class="chk" id="cchk_m"><input type="checkbox" id="cc_m" checked><span class="sw" style="background:#4da3ff"></span>EarSim</span>
+        <span class="chk" id="cchk_h"><input type="checkbox" id="cc_h" checked><span class="sw" style="background:#22d3ee"></span>P0006</span>
+        <span class="chk"><input type="checkbox" id="cc_s" checked><span class="sw" style="background:#ff7a59"></span>BTE</span></div>
+      <div class="plots">
+        <div class="plotwrap"><canvas id="itdplot"></canvas></div>
+        <div class="plotwrap"><canvas id="ildplot"></canvas></div>
+      </div>
+    </div>
+  </div>
+  <div id="side">
+    <div id="side1">
+      <b>Direction</b><div id="dirinfo" style="margin:6px 0"></div>
+      <b>Binaural cues</b><span class="hint" style="margin-left:6px">Delaunay / barycentric interpolation</span>
+      <table>
+        <tr><th></th><th>EarSim</th><th id="th_h">P0006</th><th>BTE</th></tr>
+        <tr><td>ITD (&micro;s)</td><td id="itd_m"></td><td id="itd_h"></td><td id="itd_s"></td></tr>
+        <tr><td>ILD (dB)</td><td id="ild_m"></td><td id="ild_h"></td><td id="ild_s"></td></tr>
+      </table>
+      <div style="margin-top:10px"><b>Spectral difference</b>
+        <table>
+          <tr><td>median |&Delta;| L</td><td id="dl"></td></tr>
+          <tr><td>median |&Delta;| R</td><td id="dr"></td></tr>
+          <tr><td>max |&Delta;|</td><td id="dmax"></td></tr>
+        </table>
+        <div class="hint">200 Hz&ndash;16 kHz, EarSim vs BTE (interpolated)</div>
+      </div>
+      <div style="margin-top:10px"><b>Binaural preview</b>
+        <div class="seg" id="psrc" style="margin:6px 0">
+          <button data-d="meta" id="psrc_m" class="on">EarSim</button>
+          <button data-d="human" id="psrc_h">P0006</button>
+          <button data-d="soni">BTE</button>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;margin:6px 0">
+          <select id="psig">
+            <option value="pink">Pink noise</option>
+            <option value="white">White noise</option>
+            <option value="click">Click train</option>
+            <option value="sweep">Sine sweep</option>
+            <option value="file">Upload audio&hellip;</option>
+          </select>
+          <button id="pplay" style="flex:1">&#9654; Play</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;margin:6px 0">
+          <span class="hint">Volume</span>
+          <input type="range" id="pvol" min="0" max="150" value="100" style="flex:1">
+          <span class="hint" id="pvolval" style="min-width:38px;text-align:right">100%</span>
+        </div>
+        <input type="file" id="pfile" accept="audio/*" style="display:none">
+        <div><span class="chk"><input type="checkbox" id="plmatch" checked>Match level to EarSim</span></div>
+        <div class="hint" id="phint">Renders the source sample-by-sample through the HRIR at the slider direction. Drag the sliders while playing &mdash; the filter crossfades smoothly, no clicks.</div>
+      </div>
+    </div>
+    <div id="side2" class="hidden">
+      <b>Slice</b><div id="sliceinfo" style="margin:6px 0"></div>
+      <b>Reading</b><div id="sliceread" style="margin:6px 0">&mdash;</div>
+      <div class="hint">Tip: pinna notches show up as dark ridges sweeping with angle. P0006 provides a real-human spectral reference against the two KEMAR mic placements.</div>
+      <div style="margin-top:10px"><b>Binaural cues along the sweep</b><div id="cueinfo" style="margin:6px 0"></div>
+      <b>Reading</b><div id="cueread" style="margin:6px 0">&mdash;</div>
+      <div class="hint">Cues use the same Delaunay/barycentric interpolation as the spectra. P0006 is NoITD, so its ITD trace is near zero.</div>
+    </div>
+  </div>
+</div>
+<footer style="padding:12px 20px;color:#8fa3b8;font-size:12px;line-height:1.45">
+  EarSim: <code>KEMAR_Knowl_EarSim_LargeEars_Windowed_48kHz.sofa</code>
+  &nbsp;·&nbsp;
+  BTE: <code>BTE KEMAR Knowles_Windowed_48kHz.sofa</code>
+  &nbsp;·&nbsp;
+  P0006: <code>P0006_HRIR_SONICOM_Measured_Windowed_NoITD_Scaled.sofa</code>
+  (793 matched positions, 256-sample HRIRs, 48&nbsp;kHz).
+  Interpolation: Delaunay triangulation + barycentric weights (Gamper 2013).
+  <span id="shfooter"></span>
+</footer>
+<script src="app.js"></script>
+</body>
+</html>
